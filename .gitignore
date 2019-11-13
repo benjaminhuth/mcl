@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# KDevelop folders and files
+.kdev4/
+*.kdev4
+
+# Test output files
+three_vec.txt
