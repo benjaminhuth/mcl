@@ -15,6 +15,8 @@ template<typename T> using optional = std::optional<T>;
 template<typename T> using optional = std::experimental::optional<T>;
 #endif
 
+#include "mcl_basic.hpp"
+
 namespace mc
 {
     inline bool option_exists(const std::string &option, int argc, char ** argv)
