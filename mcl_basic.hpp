@@ -148,7 +148,7 @@ namespace mc
     // =======================
     
     template< typename function_object_t>
-    double measure_time(function_object_t func, std::size_t iterations)
+    double measure_time(function_object_t func, std::size_t iterations = 1)
     {
         auto start = std::chrono::high_resolution_clock::now();
         
