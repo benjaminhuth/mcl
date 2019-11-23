@@ -1,102 +1,19 @@
-#ifndef BASIC_HPP
-#define BASIC_HPP
+#ifndef MCL_BASIC_HPP
+#define MCL_BASIC_HPP
 
+
+#include <stdexcept>
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <functional>
 #include <string>
-#include <fstream>
-#include <algorithm>
-#include <numeric>
-#include <stdexcept>
 #include <sstream>
-#include <exception>
+#include <fstream>
+#include <chrono>
     
 
 namespace mc
 {
-    // Mathematical container functions
-    // ================================
-    
-    
-    // Average
-    template<class iterator_t, class number_t = typename std::iterator_traits<iterator_t>::value_type>
-    inline number_t average(const iterator_t begin, const iterator_t end)
-    {
-        static_assert( std::is_arithmetic<number_t>::value, "Container must store arithmetic type");
-        
-        auto sum = std::accumulate(begin, end, static_cast<number_t>(0));
-        return sum / (end - begin);
-    }
-    
-    template<class container_t, class number_t = typename container_t::value_type>
-    inline number_t average(const container_t &data)
-    {
-        return average(data.begin(), data.end());
-    }
-    
-    // Standard deviation
-    template<class iterator_t, class number_t = typename std::iterator_traits<iterator_t>::value_type>
-    inline number_t standard_deviation(const iterator_t begin, const iterator_t end)
-    {
-        static_assert( std::is_arithmetic<number_t>::value, "Container must store arithmetic type");
-        
-        auto data_average = average(begin, end);
-        number_t sum = 0;
-        
-        for(auto it = begin; it != end; ++it) 
-            sum += std::pow(*it - data_average, 2);
-        
-        return std::sqrt( sum / (end - begin));
-    }
-    
-    template<class container_t, class number_t = typename container_t::value_type>
-    inline number_t standard_deviation(const container_t &data)
-    {
-        return standard_deviation(data.begin(), data.end());
-    }
-    
-    // Vector operations
-    
-    template<class iterator_t, 
-             class container_t = std::vector<typename std::iterator_traits<iterator_t>::value_type>, 
-             class number_t = typename std::iterator_traits<iterator_t>::value_type>
-    inline container_t square_container(const iterator_t begin, const iterator_t end)
-    {
-        static_assert( std::is_arithmetic<number_t>::value, "Container must store arithmetic type");
-        container_t squared_container(end - begin);
-        
-        std::transform(begin, end, squared_container.begin(), [](const number_t &el){ return el*el; });
-        
-        return squared_container;
-    }
-    
-    template<class container_t , class number_t = typename container_t::value_type>
-    inline container_t square_container(const container_t &data)
-    {
-        return square_container<typename container_t::const_iterator, container_t>(data.begin(), data.end());
-    }
-    
-    template<class iterator_t, 
-             class container_t = std::vector<typename std::iterator_traits<iterator_t>::value_type>, 
-             class number_t = typename std::iterator_traits<iterator_t>::value_type>
-    inline container_t abs_container(const iterator_t begin, const iterator_t end)
-    {
-        static_assert( std::is_arithmetic<number_t>::value, "Container must store arithmetic type");
-        container_t retcont(end - begin);
-        
-        std::transform(begin, end, retcont.begin(), [](const number_t &el){ return std::abs(el); });
-        
-        return retcont;
-    }
-
-    template<class container_t , class number_t = typename container_t::value_type>
-    inline container_t abs_container(const container_t &data)
-    {
-        return abs_container<typename container_t::const_iterator, container_t>(data.begin(), data.end());
-    }
-    
     // Container export functions
     // ==========================
 
@@ -225,6 +142,24 @@ namespace mc
             return false;
         else
             return static_cast<bool>(std::atoi(str.data()));
+    }
+    
+    // Function time measuring
+    // =======================
+    
+    template< typename function_object_t>
+    double measure_time(function_object_t func, std::size_t iterations)
+    {
+        auto start = std::chrono::high_resolution_clock::now();
+        
+        for(std::size_t i=0; i<iterations; ++i)
+            func();
+        
+        auto end = std::chrono::high_resolution_clock::now();
+        
+        std::chrono::duration<double> elapsed = end - start;
+        
+        return elapsed.count() / iterations;
     }
     
 }

@@ -6,7 +6,7 @@ ifndef DESTDIR
 DESTDIR=/usr/local
 endif
 
-test.out:
+test.out: test.cpp
 	git submodule update --init
 	$(CXX) -std=c++14 test.cpp -o test.out
 	

@@ -1,4 +1,5 @@
 #include "mcl_basic.hpp"
+#include "mcl_arithmetic.hpp"
 #include "mcl_tabular.hpp"
 #include "mcl_program_options.hpp"
 
@@ -6,6 +7,9 @@
 #include <array>
 #include <iostream>
 #include <utility>
+#include <thread>
+
+using namespace std::chrono_literals;
 
 void test_mathematical()
 {
@@ -20,7 +24,7 @@ void test_mathematical()
     std::cout << "abs vector =         " << mc::stringify_container(mc::abs_container(vector)) << std::endl;
     
     std::cout << std::endl;
-}    
+}  
 
 void test_export()
 {
@@ -73,6 +77,16 @@ void test_program_options(int argc, char ** argv)
     std::cout << std::endl;
 }
 
+void test_time_measure()
+{
+    std::cout << "TEST TIME MEASURE:" << std::endl;
+    std::cout << "execute function  [](){ std::this_thread::sleep_for(2ms); }  10 times and measure time (should be 20ms = 0.02s):" << std::endl;
+    auto time = mc::measure_time([](){ std::this_thread::sleep_for(2ms); }, 10);
+    std::cout << "result: " << time << "s" << std::endl;
+    
+    std::cout << std::endl;
+}
+
 int main(int argc, char ** argv)
 {
     std::cout << "TEST MCL LIBRARY" << std::endl;
@@ -81,5 +95,6 @@ int main(int argc, char ** argv)
     test_export();
     test_table();
     test_program_options(argc, argv);
+    test_time_measure();
 }
 
