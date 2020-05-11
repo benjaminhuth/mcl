@@ -8,7 +8,7 @@ endif
 
 test.out: test.cpp
 	git submodule update --init
-	$(CXX) -std=c++14 test.cpp -o test.out
+	$(CXX) -std=c++17 test.cpp -g -o test.out
 	
 test: test.out
 	./test.out

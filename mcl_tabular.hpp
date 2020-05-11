@@ -1,3 +1,7 @@
+#if __cplusplus < 201103L
+    #error "mcl requires C++11"
+#endif
+
 #ifndef MCL_TABULAR_HPP
 #define MCL_TABULAR_HPP
 

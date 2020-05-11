@@ -1,7 +1,16 @@
+#if __cplusplus < 201103L
+    #error "mcl requires C++11"
+#endif
+
 #include "mcl_basic.hpp"
 #include "mcl_arithmetic.hpp"
 #include "mcl_tabular.hpp"
 #include "mcl_program_options.hpp"
+
+#if __cplusplus >= 201703L
+    #include "mcl_python_like.hpp"
+#endif
+
 
 #include <vector>
 #include <array>
@@ -87,6 +96,33 @@ void test_time_measure()
     std::cout << std::endl;
 }
 
+void test_python_like()
+{
+    std::cout << "TEST PYTHON LIKE:" << std::endl;
+#if __cplusplus >= 201703L
+    std::vector<std::string> a = { "v1", "v2", "v3", "v4" };
+    const std::list<std::string> b = { "l1", "l2", "l3", "l4" };
+    double c[4] = { 1.0, 2.0, 3.0, 4.0 };
+    
+    std::cout << "enumerate:" << std::endl;
+    
+    for( auto [i, txt] : mc::enumerate(a) )
+        std::cout << i << " " << txt << std::endl;
+    std::cout << std::endl;
+    
+    
+    std::cout << "zip:" << std::endl;
+    
+    for( auto [str, num] : mc::zip(a,b) )
+        std::cout << str << " " << num << std::endl;
+    std::cout << std::endl;
+    
+#else
+    std::cout << "python_like is not supported (requires C++17)" << std::endl;
+    std::cout << std::endl;
+#endif
+}
+
 int main(int argc, char ** argv)
 {
     std::cout << "TEST MCL LIBRARY" << std::endl;
@@ -96,5 +132,6 @@ int main(int argc, char ** argv)
     test_table();
     test_program_options(argc, argv);
     test_time_measure();
+    test_python_like();
 }
 

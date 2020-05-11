@@ -1,3 +1,7 @@
+#if __cplusplus < 201103L
+    #error "mcl requires C++11"
+#endif
+
 #ifndef MCL_PROGRAM_OPTIONS_HPP_INCLUDED
 #define MCL_PROGRAM_OPTIONS_HPP_INCLUDED
 
