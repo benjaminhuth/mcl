@@ -68,12 +68,12 @@ namespace mc
             
             auto begin() 
             {                
-                return iterator{ std::apply([&](auto & ... args){ return std::make_tuple(std::begin(args)...); }, iterable_tuple) };
+                return iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::begin(args)...); }, iterable_tuple) };
             }
             
             auto end()
             {
-                return iterator{ std::apply([&](auto & ... args){ return std::make_tuple(std::end(args)...); }, iterable_tuple) };
+                return iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::end(args)...); }, iterable_tuple) };
             }
         };
         

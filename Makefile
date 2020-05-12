@@ -11,7 +11,7 @@ test.out: test.cpp
 	$(CXX) -std=c++17 test.cpp -g -o test.out
 	
 test: test.out
-	./test.out
+	./test.out --help --vectori 1 2 3 --singled 3.14
 	cat three_vec.txt
 
 install: 

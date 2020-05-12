@@ -1,9 +1,9 @@
+#ifndef MCL_PROGRAM_OPTIONS_HPP_INCLUDED
+#define MCL_PROGRAM_OPTIONS_HPP_INCLUDED
+
 #if __cplusplus < 201103L
     #error "mcl requires C++11"
 #endif
-
-#ifndef MCL_PROGRAM_OPTIONS_HPP_INCLUDED
-#define MCL_PROGRAM_OPTIONS_HPP_INCLUDED
 
 #include <vector>
 #include <string>
@@ -32,8 +32,9 @@ namespace mc
     }
     
     template<typename T>
-    inline optional<std::vector<T>> option_get_values(std::string option, int argc, char ** argv, std::vector<std::string> option_markers = {"-", "--"})
-    {
+    inline optional<std::vector<T>> option_get_values(std::string option, int argc, char ** argv,
+                                                      std::vector<std::string> option_markers = {"-", "--"})
+    {        
         // check if an argument starts with one of the option markers
         auto has_marker = [&](std::string arg)
         {
@@ -62,6 +63,18 @@ namespace mc
         }
         
         return optional<std::vector<T>>(values);
+    }
+    
+    template<typename T>
+    inline optional<T> option_get_value(std::string option, int argc, char ** argv,
+                                        std::vector<std::string> option_markers = {"-", "--"})
+    {
+        auto vec = option_get_values<T>(option, argc, argv, option_markers);
+        
+        if( vec && !vec->empty() )
+            return vec->at(0);
+        else
+            return optional<T>();
     }
 }   
 

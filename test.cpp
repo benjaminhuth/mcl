@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <array>
+#include <list>
 #include <iostream>
 #include <utility>
 #include <thread>
@@ -39,11 +40,12 @@ void test_export()
 {
     std::cout << "TEST VECTOR EXPORT:" << std::endl;
     
-    std::vector<double> vectorA(10, 3.5), vectorB(10,  4.5);
-    std::vector<std::string> vectorC(10, "testvec");
+    std::vector<double> vectorA(5, 3.5);
+    std::list<int> listB(5,  4);
+    std::vector<std::string> vectorC(5, "test");
 
     mc::clear_file("three_vec.txt");
-    mc::export_containers("three_vec.txt", { "A", "B", "C" }, vectorA, vectorB, vectorC);
+    mc::export_containers("three_vec.txt", { "A", "B", "C" }, vectorA, listB, vectorC);
     
     std::cout << "(check file three_vec.txt)" << std::endl;
     std::cout << std::endl;
@@ -74,14 +76,16 @@ void test_program_options(int argc, char ** argv)
 {
     std::cout << "TEST PROGRAM OPTIONS:" << std::endl;
     
-    if( mc::option_exists("--help", argc, argv) ) std::cout << "--help exists" << std::endl;
-    else std::cout << "--help doesn't exists" << std::endl;
+    if( mc::option_exists("--help", argc, argv) ) 
+        std::cout << "'--help' exists" << std::endl;
+    else 
+        std::cout << "'--help' doesn't exists" << std::endl;
     
-    auto int_vector = mc::option_get_values<int>("--vectori", argc, argv).value_or(std::vector<int>());
-    auto double_vec = mc::option_get_values<double>("--vectord", argc, argv).value_or(std::vector<double>());
+    auto int_vector = mc::option_get_values<int>("--vectori", argc, argv);
+    if( int_vector && !int_vector->empty() ) std::cout << "found int vector, contains " << mc::stringify_container(*int_vector) << std::endl;
     
-    if( !int_vector.empty() ) std::cout << "found int vector, contains " << mc::stringify_container(int_vector) << std::endl;
-    if( !int_vector.empty() ) std::cout << "found double vector, contains " << mc::stringify_container(double_vec) << std::endl;
+    auto single_double = mc::option_get_value<double>("--singled", argc, argv);
+    if( single_double ) std::cout << "found single double " << *single_double << std::endl;
     
     std::cout << std::endl;
 }
@@ -102,7 +106,6 @@ void test_python_like()
 #if __cplusplus >= 201703L
     std::vector<std::string> a = { "v1", "v2", "v3", "v4" };
     const std::list<std::string> b = { "l1", "l2", "l3", "l4" };
-    double c[4] = { 1.0, 2.0, 3.0, 4.0 };
     
     std::cout << "enumerate:" << std::endl;
     
@@ -113,8 +116,8 @@ void test_python_like()
     
     std::cout << "zip:" << std::endl;
     
-    for( auto [str, num] : mc::zip(a,b) )
-        std::cout << str << " " << num << std::endl;
+    for( auto [str1, str2] : mc::zip(a,b) )
+        std::cout << str1 << " " << str2 << std::endl;
     std::cout << std::endl;
     
 #else
