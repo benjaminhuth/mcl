@@ -10,10 +10,13 @@ std::vector<std::string> a = { "v1", "v2", "v3", "v4" };
 const std::list<std::string> b = { "l1", "l2", "l3", "l4" };
 
 for( auto [i, str] : mc::enumerate(a) )
-    std::cout << i << " " << str << std::endl;
+    std::cout << i << ": " << str << std::endl;
 
 for( auto [str1, str2] : mc::zip(a,b) )
-    std::cout << str << " " << num << std::endl;
+    std::cout << str << ", " << num << std::endl;
+    
+for( auto [i, str1, str2] : mc::zip_enumerate(a,b) )
+    std::cout << i << ": " << str1 << ", " << str2 << std::endl;
 ```
 
 C-style arrays (e.g. `double[4]`) are not supported at the moment. The implementations are inspired by [this implementation](http://reedbeta.com/blog/python-like-enumerate-in-cpp17).

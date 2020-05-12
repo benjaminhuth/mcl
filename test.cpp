@@ -110,14 +110,21 @@ void test_python_like()
     std::cout << "enumerate:" << std::endl;
     
     for( auto [i, txt] : mc::enumerate(a) )
-        std::cout << i << " " << txt << std::endl;
+        std::cout << i << ": " << txt << std::endl;
     std::cout << std::endl;
     
     
     std::cout << "zip:" << std::endl;
     
     for( auto [str1, str2] : mc::zip(a,b) )
-        std::cout << str1 << " " << str2 << std::endl;
+        std::cout << str1 << ", " << str2 << std::endl;
+    std::cout << std::endl;
+    
+    
+    std::cout << "zip_enumerate:" << std::endl;
+    
+    for( auto [i, str1, str2] : mc::zip_enumerate(a,b) )
+        std::cout << i << ": " << str1 << ", " << str2 << std::endl;
     std::cout << std::endl;
     
 #else

@@ -35,17 +35,19 @@ namespace mc
         return iterable_wrapper{ std::forward<iterable_t>(iterable) };
     }
     
+    // TODO const qualifiers on operator* ??
+    
     // zip (inspired by above)
     template<class ... iterable_types>
     constexpr auto zip( iterable_types && ... types )
     {
-        struct iterator
+        struct zip_iterator
         {
             using it_tuple_t = decltype(std::make_tuple(std::begin(types)...));
             using val_tuple_t = decltype(std::make_tuple((*std::begin(types))...));
             it_tuple_t iterator_tuple; 
             
-            bool operator != (const iterator & other) const 
+            bool operator != (const zip_iterator & other) const 
             { 
                 return iterator_tuple != other.iterator_tuple;
             }
@@ -55,7 +57,7 @@ namespace mc
                 std::apply([&](auto & ... it){ std::make_tuple(++it...); }, iterator_tuple); 
             }
             
-            auto operator *  () 
+            auto operator *  ()
             {
                 return std::apply([&](auto ... it){ return  std::make_tuple(*it...); }, iterator_tuple);
             }
@@ -63,17 +65,65 @@ namespace mc
         
         struct iterable_wrapper
         {
-            using iterable_tuple_t = decltype(std::make_tuple(types...));
-            iterable_tuple_t iterable_tuple;
+            decltype(std::make_tuple(types...)) iterable_tuple;
             
             auto begin() 
             {                
-                return iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::begin(args)...); }, iterable_tuple) };
+                return zip_iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::begin(args)...); }, iterable_tuple) };
             }
             
             auto end()
             {
-                return iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::end(args)...); }, iterable_tuple) };
+                return zip_iterator{ std::apply([](auto & ... args){ return std::make_tuple(std::end(args)...); }, iterable_tuple) };
+            }
+        };
+        
+        return iterable_wrapper{ std::forward_as_tuple(types...) };
+    }
+        
+    // Somehow code copy... not good, but easiest solution
+        
+    template<class ... iterable_types>
+    constexpr auto zip_enumerate( iterable_types && ... types )
+    {
+        struct zip_en_iterator
+        {
+            std::size_t i;
+            using it_tuple_t = decltype(std::make_tuple(std::begin(types)...));
+            using val_tuple_t = decltype(std::make_tuple((*std::begin(types))...));
+            it_tuple_t iterator_tuple; 
+            
+            bool operator != (const zip_en_iterator & other) const 
+            { 
+                return iterator_tuple != other.iterator_tuple;
+            }
+            
+            void operator ++ () 
+            { 
+                ++i;
+                std::apply([&](auto & ... it){ std::make_tuple(++it...); }, iterator_tuple); 
+            }
+            
+            auto operator *  ()
+            {
+                auto val_tup = std::apply([&](auto ... it){ return  std::make_tuple(*it...); }, iterator_tuple);
+                auto i_tup = std::make_tuple(i);
+                return std::tuple_cat(i_tup, val_tup);
+            }
+        };
+        
+        struct iterable_wrapper
+        {
+            decltype(std::make_tuple(types...)) iterable_tuple;
+            
+            auto begin() 
+            {                
+                return zip_en_iterator{ 0, std::apply([](auto & ... args){ return std::make_tuple(std::begin(args)...); }, iterable_tuple) };
+            }
+            
+            auto end()
+            {
+                return zip_en_iterator{ 0, std::apply([](auto & ... args){ return std::make_tuple(std::end(args)...); }, iterable_tuple) };
             }
         };
         
