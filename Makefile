@@ -15,7 +15,7 @@ test: test.out
 	cat three_vec.txt
 
 install: 
-	mkdir -p $(DESTDIR)/include/mcl && cp -rf mcl_basic.hpp mcl_arithmetic.hpp mcl_program_options.hpp mcl_tabular.hpp deps/ $(DESTDIR)/include/mcl
+	mkdir -p $(DESTDIR)/include/mcl && cp -rf mcl_basic.hpp mcl_arithmetic.hpp mcl_program_options.hpp mcl_tabular.hpp mcl_python_like.hpp deps/ $(DESTDIR)/include/mcl
 
 clean: 
 	rm three_vec.txt test.out
